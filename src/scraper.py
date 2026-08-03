@@ -1,7 +1,6 @@
 import re
 import requests as req
 import bs4 as bs
-import json
 
 
 # # Reading each line and extracting the word
@@ -13,7 +12,6 @@ import json
 
 def get_html(url : str, timeout : int=2) -> str | None:
     try:
-        url = "https://www.youtube.com/"
         response = req.get(url, timeout=timeout)
         print(f"Status-code: {response.status_code}")
         response.raise_for_status()
@@ -30,7 +28,7 @@ def get_html(url : str, timeout : int=2) -> str | None:
         print("Success!")
         return response.text
 
-data = get_html("https://dictionary.cambridge.org/dictionary/english/house")
+data = get_html("https://dictionary.cambridge.org")
 
 if (data):
     print(data[:200])
