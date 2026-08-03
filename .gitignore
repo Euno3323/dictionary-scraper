@@ -1,1 +1,3 @@
 .venv/
+data/input/*.csv
+data/output/*.csv
