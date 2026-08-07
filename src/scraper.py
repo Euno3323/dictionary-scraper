@@ -17,16 +17,21 @@ def get_html(url : str, timeout : int=2) -> str | None:
         response.raise_for_status()
 
     except req.exceptions.Timeout as e:
-        print(f"Request failed: {e}")
+        print(f"Request failed with the error: {e}")
         return None
-
+    except req.exceptions.ConnectTimeout as e:
+        print(f"Request failed with the error: {e}")
+        return None
     except req.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        print(f"Request failed with the error: {e}")
         return None
+    except req.exceptions.ConnectionError as e:
+        print(f"Request failed with the error: {e}")
+        return None
+    
+    print("Success!")
+    return response.text
 
-    else:
-        print("Success!")
-        return response.text
 
 data = get_html("https://dictionary.cambridge.org")
 
