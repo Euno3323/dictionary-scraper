@@ -13,7 +13,7 @@ import bs4 as bs
 user_agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136."
                ]
 
-def get_html(url, **kwargs):
+def fetch_html(url, **kwargs):
     """Sends a GET request to the given url"""
     try:
         response = req.get(url, **kwargs)
