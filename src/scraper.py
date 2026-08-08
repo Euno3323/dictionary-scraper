@@ -37,13 +37,12 @@ def fetch_html(url, **kwargs):
     return response.text
 
 
-data = get_html("https://dictionary.cambridge.org")
 def extract_defintion(html_content):
+    """Extracts defintion from the given html-content"""
     strainer = bs.SoupStrainer("div")
     soup = bs.BeautifulSoup(html_content, "lxml", parse_only=strainer)
 
     data = soup.find("div", class_="def ddef_d db")
     return data.get_text()
 
-if (data):
     print(data[:200])
