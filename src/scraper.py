@@ -37,5 +37,11 @@ def extract_defintion(html_content):
     definition = definition.replace(":", "").strip()
     return definition
 
+def read_words(path):
+    """Generates words from the given file"""
+    with open(path) as input_obj:
+        for line in input_obj.readlines():
+            yield sub(" .+\n?", "", line)
+
 
     print(data[:200])
