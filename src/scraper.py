@@ -33,6 +33,9 @@ def extract_defintion(html_content):
     soup = BeautifulSoup(html_content, "lxml", parse_only=strainer)
 
     data = soup.find("div", class_="def ddef_d db")
-    return data.get_text()
+    definition = data.get_text()
+    definition = definition.replace(":", "").strip()
+    return definition
+
 
     print(data[:200])
