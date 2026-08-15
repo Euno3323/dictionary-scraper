@@ -43,5 +43,12 @@ def read_words(path):
         for line in input_obj.readlines():
             yield sub(" .+\n?", "", line)
 
+def main():
+    words = read_words("data/input/words2.csv")
+    for word in words:
+        print(word)
 
-    print(data[:200])
+if __name__ == "__main__":
+    main()
+
+
