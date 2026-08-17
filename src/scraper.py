@@ -40,16 +40,25 @@ def extract_defintion(html_content):
     definition = definition.replace(":", "").strip()
     return definition
 
-def read_words(filepath, start=None, end=None):
-    """Generates words from the given file"""
+def read_input(filepath, start=None, end=None):
+    """Generates a dictionary of the words from the given file"""
     with open(filepath) as file:
         for row_index, line in enumerate(file):
             if start != None and row_index < start:
                 continue
             if end != None and end <= row_index:
                 break
-            yield sub(" .+\n?", "", line.lower().strip())
 
+            line = line.strip().lower()
+            yield {
+                "original-word" : sub(",.*", "", line),
+                "formatted-word" : sub(" .*", "", line)
+            }
+
+def write_output(path, word, definition):
+    """Writes the given word and defintion to a file"""
+    with open(path, "a") as file:
+        file.write(word + "," + definition + "\n")
 
 def main():
     words = read_words("data/input/words2.csv")
