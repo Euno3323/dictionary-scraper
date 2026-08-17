@@ -37,11 +37,16 @@ def extract_defintion(html_content):
     definition = definition.replace(":", "").strip()
     return definition
 
-def read_words(path):
+def read_words(filepath, start=None, end=None):
     """Generates words from the given file"""
-    with open(path) as input_obj:
-        for line in input_obj.readlines():
-            yield sub(" .+\n?", "", line)
+    with open(filepath) as file:
+        for row_index, line in enumerate(file):
+            if start and row_index < start:
+                continue
+            if end and end <= row_index:
+                break
+            yield sub(" .+\n?", "", line.lower().strip())
+
 
 def main():
     words = read_words("data/input/words2.csv")
