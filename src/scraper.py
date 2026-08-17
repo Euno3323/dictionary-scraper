@@ -13,7 +13,6 @@ def fetch_html(url, **kwargs):
     """Sends a GET request to the given url"""
     try:
         response = req.get(url, **kwargs)
-        print(f"Status-code: {response.status_code}")
         response.raise_for_status()
     except req.exceptions.Timeout as e:
         print(f"Request failed with the error: {e}")
@@ -27,8 +26,8 @@ def fetch_html(url, **kwargs):
     except req.exceptions.ConnectionError as e:
         print(f"Request failed with the error: {e}")
         return None
-    
-    print("Success!")
+
+    print(f"Successfully extracted content from: {url}")
     return response.text
 
 def extract_defintion(html_content):
