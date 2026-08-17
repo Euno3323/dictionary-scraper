@@ -5,6 +5,9 @@ import requests as req
 user_agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136."
                ]
 
+def create_url(word):
+    return f"https://dictionary.cambridge.org/dictionary/english/{word}"
+
 def fetch_html(url, **kwargs):
     """Sends a GET request to the given url"""
     try:
