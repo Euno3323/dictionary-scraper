@@ -1,6 +1,7 @@
 from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
 import requests as req
+import time 
 
 user_agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136."
                ]
@@ -61,9 +62,13 @@ def write_output(path, word, definition):
         file.write(word + "," + definition + "\n")
 
 def main():
-    words = read_words("data/input/words2.csv")
-    for word in words:
-        print(word)
+    word_gen = read_input("data/input/words.csv", 0, 5)
+    output_name = time.strftime("%Y%m%d_%H%M%S")
+
+    for dic in word_gen:
+        url = create_url(dic.get("formatted-word"))
+        definition = extract_defintion(fetch_html(url, headers={"User-Agent":user_agents[0]}))
+        write_output(f"data/output/{output_name}.csv", dic.get("original-word"), definition)
 
 if __name__ == "__main__":
     main()
