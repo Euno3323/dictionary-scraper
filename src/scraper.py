@@ -44,9 +44,9 @@ def read_words(filepath, start=None, end=None):
     """Generates words from the given file"""
     with open(filepath) as file:
         for row_index, line in enumerate(file):
-            if start and row_index < start:
+            if start != None and row_index < start:
                 continue
-            if end and end <= row_index:
+            if end != None and end <= row_index:
                 break
             yield sub(" .+\n?", "", line.lower().strip())
 
