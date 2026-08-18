@@ -44,9 +44,9 @@ def read_input(filepath, start=None, end=None):
     """Generates a dictionary of the words from the given file"""
     with open(filepath) as file:
         for row_index, line in enumerate(file):
-            if start != None and row_index < start:
+            if start is not None and row_index < start:
                 continue
-            if end != None and end <= row_index:
+            if end is not None and end <= row_index:
                 break
 
             line = line.strip().lower()
