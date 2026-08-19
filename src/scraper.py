@@ -3,8 +3,6 @@ from random import choice
 from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
 import requests as req
-import time 
-
 
 def create_url(word):
     return f"https://dictionary.cambridge.org/dictionary/english/{word}"
@@ -62,7 +60,7 @@ def write_output(path, word, definition):
 
 def main():
     word_gen = read_input("data/input/words.csv", 0, 5)
-    output_name = time.strftime("%Y%m%d_%H%M%S")
+    output_name = strftime("%Y%m%d_%H%M%S")
 
     for dic in word_gen:
         url = create_url(dic.get("formatted-word"))
