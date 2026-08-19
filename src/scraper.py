@@ -2,6 +2,7 @@ from agents import user_agents
 from random import choice
 from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
+from time import strftime
 import requests as req
 
 def create_url(word):
