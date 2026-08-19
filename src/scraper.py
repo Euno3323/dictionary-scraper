@@ -1,10 +1,10 @@
+from agents import user_agents
+from random import choice
 from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
 import requests as req
 import time 
 
-user_agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136."
-               ]
 
 def create_url(word):
     return f"https://dictionary.cambridge.org/dictionary/english/{word}"
@@ -66,7 +66,8 @@ def main():
 
     for dic in word_gen:
         url = create_url(dic.get("formatted-word"))
-        definition = extract_defintion(fetch_html(url, headers={"User-Agent":user_agents[0]}))
+        html = fetch_html(url, headers={"User-Agent" : choice(user_agents)})
+        definition = extract_defintion(html)
         write_output(f"data/output/{output_name}.csv", dic.get("original-word"), definition)
 
 if __name__ == "__main__":
