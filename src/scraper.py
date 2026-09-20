@@ -65,13 +65,14 @@ def read_input(filepath, start=None, end=None):
                 "formatted-word" : sub(" .*", "", line)
             }
 
-def write_output(path, word, definition):
-    """Writes the given word and defintion to a file"""
-    with open(path, "a") as file:
-        file.write(word + "," + definition + "\n")
 
 def main():
     word_gen = read_input("data/input/words.csv", 0, 5)
+def write_output(filepath, word, definition):
+    """Writes the given word and definition to a file."""
+    with open(filepath, "a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow([word, definition])
 
 def parse_arguments(args):
     """Parses arguments and validates them."""
