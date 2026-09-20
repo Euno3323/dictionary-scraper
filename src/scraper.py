@@ -3,7 +3,7 @@ import csv
 import requests as req
 from time import sleep
 from agents import user_agents
-from random import choice
+from random import choice, randint
 from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
 from time import strftime
@@ -139,7 +139,7 @@ def main(*args):
             continue
 
         write_output(f"data/output/{output_name}.csv", original_word, definition)
-        sleep(1)
+        sleep(randint(1,3))
 
 
     print(f"Found definitions for {len(words)-len(errors)}/{len(words)} words.")
@@ -151,4 +151,4 @@ def main(*args):
 
 
 if __name__ == "__main__":
-    main(r"C:\Users\vilhe\Documents\Projects\dictionary-scraper\data\input\test.csv", 0)
+    main()
