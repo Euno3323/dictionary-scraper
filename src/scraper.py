@@ -1,4 +1,7 @@
+import sys
+import csv
 import requests as req
+from time import sleep
 from agents import user_agents
 from random import choice
 from re import sub
@@ -64,8 +67,6 @@ def read_lines(filepath, start_row=None, end_row=None):
 
     return words
 
-def main():
-    word_gen = read_input("data/input/words.csv", 0, 5)
 def write_output(filepath, word, definition):
     """Writes the given word and definition to a file."""
     with open(filepath, "a", newline="", encoding="utf-8") as file:
@@ -111,17 +112,42 @@ def parse_arguments(args):
 
     return operands
     
+
+def main(*args):
+
+    if args:
+        operands = parse_arguments([*args])
+    else:
+        operands = parse_arguments(sys.argv[1:])
+
     output_name = strftime("%Y%m%d_%H%M%S")
+    words = read_lines(**operands)
+    errors = []
 
-    for dic in word_gen:
-        url = create_url(dic.get("formatted-word"))
-        html = fetch_html(url, headers={"User-Agent" : choice(user_agents)})
-        definition = extract_defintion(html)
-        write_output(f"data/output/{output_name}.csv", dic.get("original-word"), definition)
+    for original_word, formatted_word, row_index in words:
+        url = create_url(formatted_word)
+        html = fetch_html(url, timeout=5, headers={"User-Agent" : choice(user_agents)}, allow_redirects=False)
 
-if __name__ == "__main__":
-    main()
+        if not html:
+            errors.append((row_index, "Request failed"))
+            continue
 
+        definition  = extract_definition(html)
+
+        if not definition:
+            errors.append((row_index, "Definition not found"))
+            continue
+
+        write_output(f"data/output/{output_name}.csv", original_word, definition)
+        sleep(1)
+
+
+    print(f"Found definitions for {len(words)-len(errors)}/{len(words)} words.")
+
+    if errors:
+        print("Unable to find definitions for words on the following lines:")
+        for row_index, reason in errors:
+            print(f"Line: {row_index}, Reason: {reason}")
 
 
 if __name__ == "__main__":
