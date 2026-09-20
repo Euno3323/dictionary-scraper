@@ -30,16 +30,17 @@ def fetch_html(url, **kwargs):
         print(f"Request failed for {url}: {e}")
         return None
 
-def extract_defintion(html_content):
-    """Extracts defintion from the given html-content"""
+def extract_definition(html_content):
+    """Extracts definition from HTML."""
     strainer = SoupStrainer("div")
     soup = BeautifulSoup(html_content, "lxml", parse_only=strainer)
 
     data = soup.find("div", class_="def ddef_d db")
-    definition = data.get_text()
-    definition = definition.replace(":", "").strip()
-    return definition
 
+    if not data:
+        return None
+
+    return data.get_text().replace(":", "").strip()
 
 def create_url(word):
     return f"https://dictionary.cambridge.org/dictionary/english/{word}"
