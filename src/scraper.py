@@ -1,9 +1,9 @@
+import requests as req
 from agents import user_agents
 from random import choice
 from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
 from time import strftime
-import requests as req
 from pathlib import Path
 
 USAGE = "Usage: [OPTIONS] <FILEPATH> [START-ROW] [END-ROW]\n" \
@@ -18,25 +18,17 @@ USAGE = "Usage: [OPTIONS] <FILEPATH> [START-ROW] [END-ROW]\n" \
 
 
 def fetch_html(url, **kwargs):
-    """Sends a GET request to the given url"""
+    """Sends a GET request to the given url."""
     try:
         response = req.get(url, **kwargs)
         response.raise_for_status()
+        return response.text
     except req.exceptions.Timeout as e:
-        print(f"Request failed with the error: {e}")
-        return None
-    except req.exceptions.ConnectTimeout as e:
-        print(f"Request failed with the error: {e}")
+        print(f"Request failed for {url}: {e}")
         return None
     except req.exceptions.RequestException as e:
-        print(f"Request failed with the error: {e}")
+        print(f"Request failed for {url}: {e}")
         return None
-    except req.exceptions.ConnectionError as e:
-        print(f"Request failed with the error: {e}")
-        return None
-
-    print(f"Successfully extracted content from: {url}")
-    return response.text
 
 def extract_defintion(html_content):
     """Extracts defintion from the given html-content"""
