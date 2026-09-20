@@ -16,8 +16,6 @@ USAGE = "Usage: [OPTIONS] <FILEPATH> [START-ROW] [END-ROW]\n" \
         "Options:\n" \
         "\t-h, -help, --help\t Show help message"
 
-def create_url(word):
-    return f"https://dictionary.cambridge.org/dictionary/english/{word}"
 
 def fetch_html(url, **kwargs):
     """Sends a GET request to the given url"""
@@ -50,21 +48,28 @@ def extract_defintion(html_content):
     definition = definition.replace(":", "").strip()
     return definition
 
-def read_input(filepath, start=None, end=None):
-    """Generates a dictionary of the words from the given file"""
-    with open(filepath) as file:
+
+def create_url(word):
+    return f"https://dictionary.cambridge.org/dictionary/english/{word}"
+
+def read_lines(filepath, start_row=None, end_row=None):
+    """Read words from a file and return a list of tuples (original word, formatted word, row-index)."""
+
+    words = []
+
+    with open(filepath, encoding="utf-8") as file:
         for row_index, line in enumerate(file):
-            if start is not None and row_index < start:
+            if start_row is not None and row_index < start_row:
                 continue
-            if end is not None and end <= row_index:
+            if end_row is not None and row_index >= end_row:
                 break
 
             line = line.strip().lower()
-            yield {
-                "original-word" : sub(",.*", "", line),
-                "formatted-word" : sub(" .*", "", line)
-            }
 
+            if line:
+                words.append((line, sub("[ (].*", "", line), row_index))
+
+    return words
 
 def main():
     word_gen = read_input("data/input/words.csv", 0, 5)
