@@ -4,6 +4,17 @@ from re import sub
 from bs4 import SoupStrainer, BeautifulSoup
 from time import strftime
 import requests as req
+from pathlib import Path
+
+USAGE = "Usage: [OPTIONS] <FILEPATH> [START-ROW] [END-ROW]\n" \
+        "\n" \
+        "Arguments:\n" \
+        "\tFILEPATH:\tPath to input file.\n" \
+        "\tSTART-ROW:\tFirst row to read in file.\n" \
+        "\tEND-ROW:\tLast row to read in file,\n" \
+        "\n" \
+        "Options:\n" \
+        "\t-h, -help, --help\t Show help message"
 
 def create_url(word):
     return f"https://dictionary.cambridge.org/dictionary/english/{word}"
@@ -61,6 +72,46 @@ def write_output(path, word, definition):
 
 def main():
     word_gen = read_input("data/input/words.csv", 0, 5)
+
+def parse_arguments(args):
+    """Parses arguments and validates them."""
+
+    operands = {}
+
+    if not args or len(args) > 3:
+        raise SystemExit("Incorrect number of arguments.")
+    
+    if args[0] in ("-h", "-help", "--help"):
+        raise SystemExit(USAGE)
+
+    if not Path(args[0]).is_file():
+        raise SystemExit("Path is invalid, inaccessible, missing, or does not point to a file.")
+
+    if not args[0].lower().endswith(".csv"):
+        raise SystemExit("File is not of the type .csv.")
+
+    operands["filepath"] = args[0]
+
+    try:
+        start_row = int(args[1]) if len(args) > 1 else None
+        end_row = int(args[2]) if len(args) > 2 else None
+    except ValueError:
+        raise SystemExit("Optional arguments are not of type integer.")
+
+    if start_row is not None and start_row < 0:
+        raise SystemExit("Integers must be positive.")
+
+    if end_row is not None and end_row < 0:
+        raise SystemExit("Integers must be positive.")
+
+    if start_row is not None and end_row is not None and start_row > end_row:
+        raise SystemExit("START-ROW must be smaller or equal to END-ROW.")
+
+    operands["start_row"] = start_row
+    operands["end_row"] = end_row
+
+    return operands
+    
     output_name = strftime("%Y%m%d_%H%M%S")
 
     for dic in word_gen:
