@@ -123,3 +123,6 @@ if __name__ == "__main__":
     main()
 
 
+
+if __name__ == "__main__":
+    main(r"C:\Users\vilhe\Documents\Projects\dictionary-scraper\data\input\test.csv", 0)
