@@ -19,9 +19,12 @@ USAGE = "Usage: [OPTIONS] <FILEPATH> [START-ROW] [END-ROW]\n" \
         "Options:\n" \
         "\t-h, -help, --help\t Show help message"
 
+def create_url(word):
+    """Creates url to definition page of word on cambridge.org."""
+    return f"https://dictionary.cambridge.org/dictionary/english/{word}"
 
 def fetch_html(url, **kwargs):
-    """Sends a GET request to the given url."""
+    """Retrieves html-code from url."""
     try:
         response = req.get(url, **kwargs)
         response.raise_for_status()
@@ -34,7 +37,7 @@ def fetch_html(url, **kwargs):
         return None
 
 def extract_definition(html_content):
-    """Extracts definition from HTML."""
+    """Extracts definition from html-code."""
     strainer = SoupStrainer("div")
     soup = BeautifulSoup(html_content, "lxml", parse_only=strainer)
 
@@ -45,11 +48,8 @@ def extract_definition(html_content):
 
     return data.get_text().replace(":", "").strip()
 
-def create_url(word):
-    return f"https://dictionary.cambridge.org/dictionary/english/{word}"
-
 def read_lines(filepath, start_row=None, end_row=None):
-    """Read words from a file and return a list of tuples (original word, formatted word, row-index)."""
+    """Reads words from file and returns list of tuples: (original word, formatted word, row-index)."""
 
     words = []
 
@@ -63,12 +63,13 @@ def read_lines(filepath, start_row=None, end_row=None):
             line = line.strip().lower()
 
             if line:
+                # Input is assumed to be in the form: Word (Word Class)
                 words.append((line, sub("[ (].*", "", line), row_index))
 
     return words
 
 def write_output(filepath, word, definition):
-    """Writes the given word and definition to a file."""
+    """Writes a line with the word and its definition to a file."""
     with open(filepath, "a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow([word, definition])
@@ -120,7 +121,7 @@ def main(*args):
     else:
         operands = parse_arguments(sys.argv[1:])
 
-    output_name = strftime("%Y%m%d_%H%M%S")
+    output_name = strftime("%Y%m%d_%H%M%S") # We want a unique output name, e.g current time
     words = read_lines(**operands)
     errors = []
 
@@ -139,6 +140,8 @@ def main(*args):
             continue
 
         write_output(f"data/output/{output_name}.csv", original_word, definition)
+
+        # Wait 1-3 seconds to avoid any rate-limits
         sleep(randint(1,3))
 
 
